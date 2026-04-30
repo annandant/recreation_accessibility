@@ -1,0 +1,60 @@
+# pyproject.toml — recreation_accessibility (НИР Антоновой, ИТМО 2026)
+#
+# Инструменты: ruff (линтер), black (форматтер), mypy (типизация).
+# Запуск:
+#   ruff check src/ tests/
+#   black --check src/ tests/
+#   mypy src/                # информативно; zero-errors не обязательно
+
+[build-system]
+requires      = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+# -------------------------------------------------------------------- #
+# ruff
+# -------------------------------------------------------------------- #
+[tool.ruff]
+line-length    = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+]
+ignore = [
+    "E501",  # line-too-long — контролируется black
+    "B006",  # mutable default argument — есть намеренные случаи в коде
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]   # assert в тестах разрешён
+
+# -------------------------------------------------------------------- #
+# black
+# -------------------------------------------------------------------- #
+[tool.black]
+line-length     = 100
+target-version  = ["py310"]
+skip-string-normalization = false
+
+# -------------------------------------------------------------------- #
+# mypy (информативный запуск, не блокирующий CI)
+# -------------------------------------------------------------------- #
+[tool.mypy]
+python_version         = "3.10"
+ignore_missing_imports = true   # geopandas/osmnx stubs недоступны
+warn_return_any        = false
+warn_unused_ignores    = true
+disallow_untyped_defs  = false  # постепенное добавление аннотаций
+
+# -------------------------------------------------------------------- #
+# pytest
+# -------------------------------------------------------------------- #
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
